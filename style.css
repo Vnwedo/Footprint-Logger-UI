@@ -239,3 +239,42 @@ td {
 .badge-transport { background: #e0f2fe; color: #0369a1; }
 .badge-food { background: #fef3c7; color: #92400e; }
 .badge-energy { background: #dcfce7; color: #166534; }
+
+/* Auth Specific Layout */
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-toggle {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+#toggle-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Streak Badge Style */
+.streak-badge {
+    background: #ffecd1;
+    color: #ff9f1c;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
