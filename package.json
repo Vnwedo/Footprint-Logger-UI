@@ -1,0 +1,28 @@
+{
+  "name": "footprint-logger-ui",
+  "version": "1.0.0",
+  "description": "to help individuals track their daily activities that contribute to carbon emissions",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vnwedo/Footprint-Logger-UI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vnwedo/Footprint-Logger-UI/issues"
+  },
+  "homepage": "https://github.com/Vnwedo/Footprint-Logger-UI#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.5"
+  }
+}

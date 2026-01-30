@@ -4,23 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoTrack | Carbon Footprint Logger</title>
-    <!-- External CSS -->
     <link rel="stylesheet" href="style.css">
-    <!-- Chart.js for Visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
     <div class="container">
         <header>
+            <div class="user-nav">
+                <span id="welcome-msg">Welcome, Guest</span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
             <h1><i data-lucide="leaf"></i> EcoTrack</h1>
             <p>Calculate and minimize your daily carbon footprint</p>
+            
+            <div class="streak-badge" id="streak-container" style="display: none;">
+                <i data-lucide="flame"></i> <span id="user-streak">0</span> Day Streak
+            </div>
         </header>
 
         <div class="dashboard">
-            <!-- Input Card -->
             <div class="card">
                 <h2><i data-lucide="plus-circle"></i> Log New Activity</h2>
                 <form id="footprint-form">
@@ -36,27 +40,35 @@
                     <div class="form-group">
                         <label id="amount-label" for="amount">Quantity</label>
                         <input type="number" id="amount" placeholder="Enter amount..." step="0.1" required>
-                        <small id="unit-hint" class="hint-text">
-                            Select a category to see units
-                        </small>
+                        <small id="unit-hint" class="hint-text">Select a category to see units</small>
                     </div>
                     <button type="submit" class="btn-primary">Add to My Log</button>
                 </form>
             </div>
 
-            <!-- Summary Card -->
             <div class="card">
                 <div class="total-display">
-                    <span class="total-label">Estimated Total Impact</span>
+                    <span class="total-label">Your Total Impact</span>
                     <span class="total-number" id="total-co2">0.00</span>
                     <span class="total-label">kg CO<sub>2</sub>e</span>
                 </div>
+                
+                <div class="community-box">
+                    <p>Community Average: <strong><span id="comm-avg">0.00</span> kg</strong></p>
+                    <div class="progress-bar"><div id="comp-bar"></div></div>
+                </div>
+
                 <div class="chart-container">
                     <canvas id="footprintChart"></canvas>
                 </div>
             </div>
 
-            <!-- History Card -->
+            <div class="card history-card">
+                <h2><i data-lucide="trophy"></i> Low-Footprint Leaders</h2>
+                <ul id="leaderboard-list" class="leaderboard">
+                    </ul>
+            </div>
+
             <div class="card history-card">
                 <h2><i data-lucide="history"></i> Activity History</h2>
                 <div class="filters">
@@ -77,20 +89,13 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="log-body">
-                            <!-- Logs injected via JS -->
-                        </tbody>
+                        <tbody id="log-body"></tbody>
                     </table>
-                    <div id="empty-msg" class="empty-state">
-                        <i data-lucide="database" style="margin-bottom: 10px;"></i>
-                        <p>No activities logged yet. Start by adding one above!</p>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- External JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
