@@ -13,13 +13,13 @@
     <div class="container">
         <header>
             <div class="user-nav">
-                <span id="welcome-msg">Welcome, Guest</span>
+                <span id="welcome-msg">Welcome, User</span>
                 <button onclick="logout()" class="logout-btn">Logout</button>
             </div>
             <h1><i data-lucide="leaf"></i> EcoTrack</h1>
             <p>Calculate and minimize your daily carbon footprint</p>
             
-            <div class="streak-badge" id="streak-container" style="display: none;">
+            <div class="streak-badge" id="streak-container">
                 <i data-lucide="flame"></i> <span id="user-streak">0</span> Day Streak
             </div>
         </header>
@@ -55,7 +55,9 @@
                 
                 <div class="community-box">
                     <p>Community Average: <strong><span id="comm-avg">0.00</span> kg</strong></p>
-                    <div class="progress-bar"><div id="comp-bar"></div></div>
+                    <div class="progress-bar-bg">
+                        <div id="comp-bar" class="progress-bar-fill"></div>
+                    </div>
                 </div>
 
                 <div class="chart-container">
@@ -63,8 +65,8 @@
                 </div>
             </div>
 
-            <div class="card history-card">
-                <h2><i data-lucide="trophy"></i> Low-Footprint Leaders</h2>
+            <div class="card leaderboard-card">
+                <h2><i data-lucide="trophy"></i> Top Eco-Savers</h2>
                 <ul id="leaderboard-list" class="leaderboard">
                     </ul>
             </div>

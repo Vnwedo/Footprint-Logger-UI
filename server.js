@@ -30,7 +30,7 @@ app.use('/api/logs', logRoutes);
 
 // 6. Handle SPA (Optional)
 // If a user refreshes on a subpage, serve index.html
-app.get('*', (req, res) => {
+app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

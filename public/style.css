@@ -278,3 +278,55 @@ td {
     gap: 5px;
     margin-top: 10px;
 }
+
+.community-box {
+    background: var(--bg-light);
+    padding: 15px;
+    border-radius: var(--radius);
+    margin: 15px 0;
+}
+
+.leaderboard {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid var(--secondary);
+}
+
+.leaderboard-item .rank {
+    font-weight: bold;
+    color: var(--accent);
+    margin-right: 10px;
+}
+
+.leaderboard {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid var(--secondary);
+    transition: background 0.2s;
+}
+
+.leaderboard-item:hover {
+    background: var(--bg-light);
+}
+
+.rank {
+    font-weight: bold;
+    color: var(--primary);
+    width: 30px;
+}
+
+.name { flex-grow: 1; font-weight: 500; }
+.score { font-weight: bold; color: var(--accent); }
