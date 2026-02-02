@@ -62,10 +62,9 @@ app.get(/(.*)/, (req, res) => {
 
 /**
  * 9. Start Server & Connect Database
- * We listen FIRST so Render detects the open port immediately.
- * We connect to MongoDB SECOND so it doesn't block the port binding.
+ * We listen FIRST so Render detects the open port 10000 immediately.
  */
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000; // Updated default to match Render
 
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`
@@ -74,6 +73,7 @@ server.listen(PORT, '0.0.0.0', () => {
     📡 WebSockets: Enabled
     `);
 
-    // Connect to database after the port is successfully bound
+    // 10. Connect to database AFTER the port is successfully bound
+    // This prevents a slow DB connection from failing the Render deploy
     connectDB();
 });
