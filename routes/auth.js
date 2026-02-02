@@ -9,16 +9,25 @@ router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
         
-        // Check if user exists
         let user = await User.findOne({ username });
         if (user) return res.status(400).json({ message: "User already exists" });
 
-        // Hash password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
         user = new User({ username, password: hashedPassword });
         
         await user.save();
-        res.status(201).json({ message: "User registered successfully" });
+
+        // NEW: Create a token immediately after registration
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+        // NEW: Send back the same data structure as the Login route
+        res.status(201).json({ 
+            token: token,
+            user: {
+                id: user._id,
+                username: user.username
+            }
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -35,7 +44,13 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-        res.json({ token, userId: user._id, username: user.username, streak: user.streak });
+        res.json({
+    token: token,
+    user: {
+        id: user._id, // Ensure this is being sent!
+        username: user.username
+    }
+});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -48,7 +48,39 @@
             document.getElementById('toggle-text').innerText = isLogin ? "Don't have an account?" : "Already have an account?";
             link.innerText = isLogin ? "Register here" : "Login here";
         });
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Stop page from refreshing
 
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Decide which URL to hit based on our isLogin variable
+    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+    // Save BOTH pieces of information
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.user.id); // This is what script.js is looking for!
+    
+    alert(isLogin ? 'Login Successful!' : 'Registration Successful!');
+    window.location.href = 'index.html'; 
+} else {
+            alert(data.msg || 'Something went wrong');
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        alert('Server connection failed');
+    }
+});
         lucide.createIcons();
     </script>
 </body>
