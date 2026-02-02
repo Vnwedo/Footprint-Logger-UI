@@ -1,51 +1,75 @@
 /**
- * EcoTrack - Main Server Entry Point
+ * EcoTrack - Main Server Entry Point (Updated for Real-Time Insights)
  */
 
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
+const http = require('http');           // 1. Required for Socket.io
+const { Server } = require('socket.io'); // 2. Required for Socket.io
 const connectDB = require('./config/db');
 
-// 1. Load Environment Variables
+// Load Environment Variables
 dotenv.config();
 
-// 2. Connect to MongoDB
+// Connect to MongoDB
 connectDB();
 
 const app = express();
 
-// 3. Middleware
-app.use(express.json()); // Parses incoming JSON requests
-app.use(express.static(path.join(__dirname, 'public'))); // Serves your HTML/CSS/JS
+/** * 3. Create HTTP Server
+ * We wrap the 'app' (Express) inside a native Node HTTP server.
+ */
+const server = http.createServer(app);
 
-// 4. Import Routes
+/** * 4. Initialize Socket.io
+ * This attaches the WebSocket engine to our server.
+ */
+const io = new Server(server, {
+    cors: {
+        origin: "*", // Adjust this in production for security
+        methods: ["GET", "POST"]
+    }
+});
+
+// 5. Middleware
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+/**
+ * 6. Global Socket Instance
+ * This allows our route files (like logs.js) to access 'io' via the request object.
+ */
+app.set('socketio', io);
+
+// 7. Import Routes
 const authRoutes = require('./routes/auth');
 const logRoutes = require('./routes/logs');
 
-// 5. Use Routes
-// Maps auth logic to /api/auth and activity logic to /api/logs
+// 8. Use Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/logs', logRoutes);
 
-// 6. Handle SPA (Optional)
-// If a user refreshes on a subpage, serve index.html
+// 9. Socket.io Connection Logic
+io.on('connection', (socket) => {
+    console.log(`📡 New user connected: ${socket.id}`);
+
+    socket.on('disconnect', () => {
+        console.log('🔌 User disconnected');
+    });
+});
+
+// 10. SPA Handler
 app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// 7. Start Server
+// 11. Start Server (Crucial: use 'server.listen', not 'app.listen')
 const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`
-    ✅ EcoTrack Server Started
+    ✅ EcoTrack Insight Engine Started
     🚀 Port: ${PORT}
-    🌐 Mode: ${process.env.NODE_ENV || 'development'}
+    📡 WebSockets: Enabled
     `);
-});
-
-// Handle Unhandled Rejections (e.g., DB connection loss)
-process.on('unhandledRejection', (err, promise) => {
-    console.log(`Error: ${err.message}`);
-    server.close(() => process.exit(1));
 });

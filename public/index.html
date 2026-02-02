@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoTrack | Carbon Footprint Logger</title>
     <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -25,6 +26,18 @@
         </header>
 
         <div class="dashboard">
+
+            <div class="card insight-card">
+    <h2><i data-lucide="lightbulb"></i> Eco-Insights</h2>
+    <div id="tip-container" class="community-box">
+        <p id="personalized-tip">Analyzing your habits...</p>
+    </div>
+    <div class="goal-section">
+        <p>Weekly Target: <strong><span id="weekly-goal">0.00</span> kg</strong></p>
+        <progress id="goal-progress" value="0" max="100" style="width:100%"></progress>
+    </div>
+</div>
+
             <div class="card">
                 <h2><i data-lucide="plus-circle"></i> Log New Activity</h2>
                 <form id="footprint-form">

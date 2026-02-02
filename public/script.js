@@ -12,6 +12,27 @@ const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('token')}`
 });
 
+const socket = io(); 
+
+socket.on('new-tip', (data) => {
+    document.getElementById('personalized-tip').innerText = data.msg;
+});
+
+async function loadInsights() {
+    const userId = localStorage.getItem('userId');
+    const res = await fetch(`/api/logs/insights/${userId}`, { headers: getAuthHeaders() });
+    const data = await res.json();
+    
+    document.getElementById('personalized-tip').innerText = data.tip;
+    document.getElementById('weekly-goal').innerText = data.weeklyGoal;
+    
+    // Update progress bar vs current total
+    const currentTotal = parseFloat(document.getElementById('total-co2').innerText);
+    const progressBar = document.getElementById('goal-progress');
+    progressBar.max = data.weeklyGoal * 1.5; // Scale for UI
+    progressBar.value = currentTotal;
+}
+
 // 1. Initialization
 async function init() {
     const userId = localStorage.getItem('userId');
