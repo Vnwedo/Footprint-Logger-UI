@@ -17,15 +17,14 @@ router.post('/register', async (req, res) => {
         
         await user.save();
 
-        // NEW: Create a token immediately after registration
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
-        // NEW: Send back the same data structure as the Login route
         res.status(201).json({ 
             token: token,
             user: {
                 id: user._id,
-                username: user.username
+                username: user.username,
+                streak: user.streak // Added for frontend consistency
             }
         });
     } catch (err) {
@@ -44,13 +43,15 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        
         res.json({
-    token: token,
-    user: {
-        id: user._id, // Ensure this is being sent!
-        username: user.username
-    }
-});
+            token: token,
+            user: {
+                id: user._id,
+                username: user.username,
+                streak: user.streak // Added for immediate dashboard update
+            }
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
