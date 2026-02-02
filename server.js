@@ -1,75 +1,79 @@
 /**
- * EcoTrack - Main Server Entry Point (Updated for Real-Time Insights)
+ * EcoTrack - Main Server Entry Point
+ * Optimized for Render Deployment & Real-Time Insights
  */
 
 const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
-const http = require('http');           // 1. Required for Socket.io
-const { Server } = require('socket.io'); // 2. Required for Socket.io
+const http = require('http');           
+const { Server } = require('socket.io'); 
 const connectDB = require('./config/db');
 
-// Load Environment Variables
+// 1. Load Environment Variables
 dotenv.config();
-
-// Connect to MongoDB
-connectDB();
 
 const app = express();
 
-/** * 3. Create HTTP Server
- * We wrap the 'app' (Express) inside a native Node HTTP server.
+/** * 2. Create HTTP Server & Socket.io
+ * Wrapping Express in an HTTP server is required for WebSockets.
  */
 const server = http.createServer(app);
-
-/** * 4. Initialize Socket.io
- * This attaches the WebSocket engine to our server.
- */
 const io = new Server(server, {
     cors: {
-        origin: "*", // Adjust this in production for security
+        origin: "*", 
         methods: ["GET", "POST"]
     }
 });
 
-// 5. Middleware
+// 3. Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
- * 6. Global Socket Instance
- * This allows our route files (like logs.js) to access 'io' via the request object.
+ * 4. Global Socket Instance
+ * Shared so route files can trigger real-time tips.
  */
 app.set('socketio', io);
 
-// 7. Import Routes
+// 5. Import Routes
 const authRoutes = require('./routes/auth');
 const logRoutes = require('./routes/logs');
 
-// 8. Use Routes
+// 6. Use Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/logs', logRoutes);
 
-// 9. Socket.io Connection Logic
+// 7. Socket.io Connection Logic
 io.on('connection', (socket) => {
     console.log(`📡 New user connected: ${socket.id}`);
-
     socket.on('disconnect', () => {
         console.log('🔌 User disconnected');
     });
 });
 
-// 10. SPA Handler
+// 8. Handle Single Page Application (SPA) Routing
 app.get(/(.*)/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    // Only serve index.html if the request isn't for an API route
+    if (!req.url.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    }
 });
 
-// 11. Start Server (Crucial: use 'server.listen', not 'app.listen')
+/**
+ * 9. Start Server & Connect Database
+ * We listen FIRST so Render detects the open port immediately.
+ * We connect to MongoDB SECOND so it doesn't block the port binding.
+ */
 const PORT = process.env.PORT || 3000;
-server.listen(PORT,'0.0.0.0',() => {
+
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`
-    ✅ EcoTrack Insight Engine Started
+    ✅ EcoTrack Server Live
     🚀 Port: ${PORT}
     📡 WebSockets: Enabled
     `);
+
+    // Connect to database after the port is successfully bound
+    connectDB();
 });
